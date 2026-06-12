@@ -1,5 +1,11 @@
 // Configuração do Google Sign-In
 const GOOGLE_CLIENT_ID = '424109518951-bbqlvjes24r7e4mc4et9g448slvncpg4.apps.googleusercontent.com';
+const DEFAULT_USER = {
+  name: 'Maria Clara',
+  given_name: 'Maria',
+  email: 'mariaclara@teste.com',
+  picture: 'assets/image 1.png',
+};
 
 // Inicializar o Google Sign-In
 function initializeGoogleSignIn() {
@@ -13,35 +19,17 @@ function initializeGoogleSignIn() {
     auto_select: false,
     cancel_on_tap_outside: false,
   });
-
-  const buttonContainer = document.getElementById('google-signin-button');
-  if (buttonContainer) {
-    google.accounts.id.renderButton(buttonContainer, {
-      theme: 'outline',
-      size: 'large',
-      text: 'continue_with',
-    });
-    google.accounts.id.prompt();
-  }
 }
 
 window.initializeGoogleSignIn = initializeGoogleSignIn;
 
 // Callback ao receber resposta do Google
 function handleCredentialResponse(response) {
-  // response.credential contém o JWT token
   const token = response.credential;
-
-  // Decodificar o JWT (sem verificação - apenas para demo)
   const userData = parseJwt(token);
 
-  console.log("Usuário autenticado:", userData);
-
-  // Guardar token no sessionStorage
   sessionStorage.setItem("googleToken", token);
   sessionStorage.setItem("userData", JSON.stringify(userData));
-
-  // Redirecionar para dashboard
   window.location.href = "dashboard.html";
 }
 
@@ -67,21 +55,39 @@ function handleGoogleLogin() {
   }
 }
 
+// Fazer login local com usuário padrão
+function handleLocalLogin(event) {
+  event.preventDefault();
+
+  const nome = document.getElementById('nome').value.trim();
+  const senha = document.getElementById('senha').value.trim();
+
+  if (nome === 'Maria Clara' && senha === '1234') {
+    sessionStorage.setItem('googleToken', 'local-test-token');
+    sessionStorage.setItem('userData', JSON.stringify(DEFAULT_USER));
+    window.location.href = 'dashboard.html';
+    return false;
+  }
+
+  alert('Credenciais incorretas. Use Nome: Maria Clara e Senha: 1234');
+  return false;
+}
+
 // Fazer logout
 function handleLogout() {
-  google.accounts.id.disableAutoSelect();
+  if (window.google && window.google.accounts && window.google.accounts.id) {
+    google.accounts.id.disableAutoSelect();
+  }
+
   sessionStorage.removeItem("googleToken");
   sessionStorage.removeItem("userData");
-  console.log("Desconectado");
   window.location.href = "index.html";
 }
 
 // Verificar se usuário está autenticado
 function checkAuth() {
-  const token = sessionStorage.getItem("googleToken");
   const userData = sessionStorage.getItem("userData");
-
-  if (token && userData) {
+  if (userData) {
     return JSON.parse(userData);
   }
   return null;

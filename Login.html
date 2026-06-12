@@ -8,7 +8,6 @@
   <title>Login</title>
 </head>
 
-<body>
   <div class="login-page">
     <div class="login-container">
       <header class="login-header">
@@ -20,15 +19,15 @@
         </div>
       </header>
 
-      <form class="login-form">
+      <form id="loginForm" class="login-form" onsubmit="return handleLocalLogin(event)">
         <div class="form-group">
           <label class="field-label" for="nome">Nome</label>
-          <input id="nome" name="nome" type="text" class="input-field" placeholder="Digite seu nome">
+          <input id="nome" name="nome" type="text" class="input-field" value="Maria Clara" required>
         </div>
 
         <div class="form-group">
           <label class="field-label" for="senha">Senha</label>
-          <input id="senha" name="senha" type="password" class="input-field" placeholder="Digite sua senha">
+          <input id="senha" name="senha" type="password" class="input-field" value="1234" required>
         </div>
 
         <button type="submit" class="btn btn-login">Login</button>
@@ -45,7 +44,6 @@
         </span>
         Login com o Google
       </button>
-      <div id="google-signin-button" style="display:none;"></div>
 
       <p class="login-footer">Não tem conta? <a href="registro.html" class="login-link">Registre-se aqui</a></p>
     </div>
